@@ -19,6 +19,7 @@ async function run() {
     await client.connect();
     const partCollection = client.db('keyboardquipo').collection('parts');
     const bookingCollection = client.db('keyboardquipo').collection('bookings');
+    const userCollection = client.db('keyboardquipo').collection('users');
 
     // read all data of parts
     app.get('/part', async (req, res) => {
@@ -48,6 +49,18 @@ async function run() {
     app.post('/booking', async(req, res) => {
       const booking = req.body;
       const result = bookingCollection.insertOne(booking);
+      res.send(result);
+    })
+
+    app.put('/user/:email', async(req, res) => {
+      const email = req.params.email;
+      const user = req.body;
+      const filter = {email: email};
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: user,
+      };
+      const result = await userCollection.updateOne(filter, updateDoc, options);
       res.send(result);
     })
 
