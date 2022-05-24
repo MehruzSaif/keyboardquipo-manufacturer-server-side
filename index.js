@@ -18,6 +18,7 @@ async function run() {
   try {
     await client.connect();
     const partCollection = client.db('keyboardquipo').collection('parts');
+    const bookingCollection = client.db('keyboardquipo').collection('bookings');
 
     // read all data of parts
     app.get('/part', async (req, res) => {
@@ -35,6 +36,12 @@ async function run() {
       res.send(part);
     });
 
+
+    app.post('/booking', async(req, res) => {
+      const booking = req.body;
+      const result = bookingCollection.insertOne(booking);
+      res.send(result);
+    })
 
     /* // POST
     app.post('/part', async (req, res) => {
