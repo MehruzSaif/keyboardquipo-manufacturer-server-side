@@ -36,6 +36,7 @@ async function run() {
     const partCollection = client.db('keyboardquipo').collection('parts');
     const bookingCollection = client.db('keyboardquipo').collection('bookings');
     const userCollection = client.db('keyboardquipo').collection('users');
+    const equipmentCollection = client.db('keyboardquipo').collection('equipments');
 
     // read all data of parts
     app.get('/part', async (req, res) => {
@@ -117,6 +118,14 @@ async function run() {
       const token = jwt.sign({ email: email }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' })
       res.send({ result, token });
     });
+
+
+    // for addPart collection for admin
+    app.post('/equipment', async(req, res) => {
+      const equipment = req.body;
+      const result = await equipmentCollection.insertOne(equipment);
+      res.send(result);
+    })
 
     /* // POST
     app.post('/part', async (req, res) => {
