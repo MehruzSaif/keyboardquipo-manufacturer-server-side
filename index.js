@@ -17,7 +17,7 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 
 function verifyJWT(req, res, next) {
   const authHeader = req.headers.authorization;
-  if(!authHeader) {
+  if (!authHeader) {
     return res.status(401).send({ message: 'UnAuthorized access' });
   }
   const token = authHeader.split(' ')[1];
@@ -56,10 +56,15 @@ async function run() {
 
     app.get('/booking', verifyJWT, async (req, res) => {
       const buyer = req.query.buyer;
-      console.log('auth header', authorization);
-      const query = { buyer: buyer };
-      const bookings = await bookingCollection.find(query).toArray();
-      res.send(bookings);
+      const decodedEmail = req.decoded.email;
+      if (buyer === decodedEmail) {
+        const query = { buyer: buyer };
+        const bookings = await bookingCollection.find(query).toArray();
+        return res.send(bookings);
+      }
+      else {
+        return res.status(403).send({ message: 'forbidden access' });
+      }
     })
 
 
@@ -67,6 +72,11 @@ async function run() {
       const booking = req.body;
       const result = bookingCollection.insertOne(booking);
       res.send(result);
+    })
+
+    app.get('/user', verifyJWT, async (req, res) => {
+      const users = await userCollection.find().toArray();
+      res.send(users);
     })
 
     app.put('/user/:email', async (req, res) => {
