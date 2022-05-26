@@ -138,6 +138,15 @@ async function run() {
       res.send(result);
     })
 
+
+    // for delete part for admin
+    app.delete('/part/:id', verifyJWT, verifyAdmin, async (req, res) => {
+      const id = req.params.id;
+      const filter = {_id: ObjectId(id)}
+      const result = await partCollection.deleteOne(filter);
+      res.send(result);
+    })
+
     /* // POST
     app.post('/part', async (req, res) => {
       const newItem = req.body;
