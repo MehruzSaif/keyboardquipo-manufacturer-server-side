@@ -79,6 +79,14 @@ async function run() {
       }
     })
 
+    // payment for particular id
+    app.get('/booking/:id', verifyJWT, async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const booking = await bookingCollection.findOne(query);
+      res.send(booking);
+    })
+
 
     app.post('/booking', async (req, res) => {
       const booking = req.body;
@@ -125,7 +133,7 @@ async function run() {
 
 
     // for manage part for admin
-    app.get('/part', verifyJWT, verifyAdmin, async(req, res) => {
+    app.get('/part', verifyJWT, verifyAdmin, async (req, res) => {
       const equipments = await partCollection.find().toArray();
       res.send(equipments);
     })
@@ -142,7 +150,7 @@ async function run() {
     // for delete part for admin
     app.delete('/part/:id', verifyJWT, verifyAdmin, async (req, res) => {
       const id = req.params.id;
-      const filter = {_id: ObjectId(id)}
+      const filter = { _id: ObjectId(id) }
       const result = await partCollection.deleteOne(filter);
       res.send(result);
     })
