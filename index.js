@@ -124,6 +124,13 @@ async function run() {
     });
 
 
+    // for manage part for admin
+    app.get('/part', verifyJWT, verifyAdmin, async(req, res) => {
+      const equipments = await partCollection.find().toArray();
+      res.send(equipments);
+    })
+
+
     // for addPart collection for admin
     app.post('/part', verifyJWT, verifyAdmin, async (req, res) => {
       const equipment = req.body;
