@@ -38,6 +38,7 @@ async function run() {
     const bookingCollection = client.db('keyboardquipo').collection('bookings');
     const userCollection = client.db('keyboardquipo').collection('users');
     const paymentCollection = client.db('keyboardquipo').collection('payments');
+    const reviewCollection = client.db('keyboardquipo').collection('reviews');
     /* const equipmentCollection = client.db('keyboardquipo').collection('equipments'); */
 
     const verifyAdmin = async (req, res, next) => {
@@ -188,6 +189,24 @@ async function run() {
       const result = await partCollection.deleteOne(filter);
       res.send(result);
     })
+
+
+    // for add review collection for user
+    app.post('/review', verifyJWT, async (req, res) => {
+      const comment = req.body;
+      const result = await reviewCollection.insertOne(comment);
+      res.send(result);
+    })
+
+    // read all data of reviews
+    app.get('/review', async (req, res) => {
+      const query = {};
+      const cursor = reviewCollection.find(query);
+      const reviews = await cursor.toArray();
+      res.send(reviews);
+    });
+
+    
 
     /* // POST
     app.post('/part', async (req, res) => {
