@@ -105,8 +105,8 @@ async function run() {
 
     // booking post
     app.post('/booking', async (req, res) => {
-      const {price, quantity, buyer, buyerName} = req.body;
-      let order = {"buyer": buyer, "buyerName": buyerName, "price": price, "quantity": quantity, "paid": false}
+      const {price, quantity, buyer, partName } = req.body;
+      let order = {"buyer": buyer, "partName": partName, "price": price, "quantity": quantity, "paid": false}
       const result = bookingCollection.insertOne(order);
       res.send(result);
     })
@@ -205,6 +205,15 @@ async function run() {
       const reviews = await cursor.toArray();
       res.send(reviews);
     });
+
+
+    //// user can cancel booking
+    app.delete('/booking/:id', verifyJWT, async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: ObjectId(id) }
+      const result = await bookingCollection.deleteOne(filter);
+      res.send(result);
+    })
 
     
 
