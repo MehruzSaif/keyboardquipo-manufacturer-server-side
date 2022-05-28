@@ -39,6 +39,7 @@ async function run() {
     const userCollection = client.db('keyboardquipo').collection('users');
     const paymentCollection = client.db('keyboardquipo').collection('payments');
     const reviewCollection = client.db('keyboardquipo').collection('reviews');
+    const profileCollection = client.db('keyboardquipo').collection('profiles');
     /* const equipmentCollection = client.db('keyboardquipo').collection('equipments'); */
 
     const verifyAdmin = async (req, res, next) => {
@@ -212,6 +213,13 @@ async function run() {
       const id = req.params.id;
       const filter = { _id: ObjectId(id) }
       const result = await bookingCollection.deleteOne(filter);
+      res.send(result);
+    })
+
+    // for add profile collection for user and admin
+    app.post('/profile', verifyJWT, verifyAdmin, async (req, res) => {
+      const profile = req.body;
+      const result = await profileCollection.insertOne(profile);
       res.send(result);
     })
 
