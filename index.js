@@ -104,7 +104,7 @@ async function run() {
       res.send({ clientSecret: paymentIntent.client_secret })
     });
 
-    // booking post
+    // for booking post
     app.post('/booking', async (req, res) => {
       const {price, quantity, buyer, partName } = req.body;
       let order = {"buyer": buyer, "partName": partName, "price": price, "quantity": quantity, "paid": false}
@@ -217,9 +217,18 @@ async function run() {
     })
 
     // for add profile collection for user and admin
-    app.post('/profile', verifyJWT, verifyAdmin, async (req, res) => {
+    app.post('/profile', async (req, res) => {
       const profile = req.body;
       const result = await profileCollection.insertOne(profile);
+      res.send(result);
+    })
+
+
+    // for get profile
+    app.get('/profile/:id', async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: ObjectId(id) }
+      const result = await profileCollection.findOne(filter);
       res.send(result);
     })
 
